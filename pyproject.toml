@@ -11,10 +11,11 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-python-decouple = "3.8"
 loguru = "^0.7.2"
-motor = "^3.1.1"            # Async MongoDB driver
+motor = "^3.1.1"           # Async MongoDB driver
 pytest = "^7.4.0"
+iso8601 = "^0.1.14"        # For ISO 8601 date handling
+pytest-asyncio = "^0.23.0" # For async testing support
 load-dotenv = "^0.1.0"
 
 [tool.poetry.group.formatting.dependencies]

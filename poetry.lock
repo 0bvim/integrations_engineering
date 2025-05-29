@@ -107,6 +107,18 @@ files = [
 ]
 
 [[package]]
+name = "iso8601"
+version = "0.1.16"
+description = "Simple module to parse ISO 8601 dates"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "iso8601-0.1.16-py2.py3-none-any.whl", hash = "sha256:906714829fedbc89955d52806c903f2332e3948ed94e31e85037f9e0226b8376"},
+    {file = "iso8601-0.1.16.tar.gz", hash = "sha256:36532f77cc800594e8f16641edae7f1baf7932f05d8e508545b95fc53c6dc85b"},
+]
+
+[[package]]
 name = "load-dotenv"
 version = "0.1.0"
 description = "Automatically and implicitly load environment variables from .env file"
@@ -336,16 +348,23 @@ pluggy = ">=0.12,<2.0"
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
-name = "python-decouple"
-version = "3.8"
-description = "Strict separation of settings from code."
+name = "pytest-asyncio"
+version = "0.23.8"
+description = "Pytest support for asyncio"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "python-decouple-3.8.tar.gz", hash = "sha256:ba6e2657d4f376ecc46f77a3a615e058d93ba5e465c01bbe57289bfb7cce680f"},
-    {file = "python_decouple-3.8-py3-none-any.whl", hash = "sha256:d0d45340815b25f4de59c974b855bb38d03151d81b037d9e3f463b0c9f8cbd66"},
+    {file = "pytest_asyncio-0.23.8-py3-none-any.whl", hash = "sha256:50265d892689a5faefb84df80819d1ecef566eb3549cf915dfb33569359d1ce2"},
+    {file = "pytest_asyncio-0.23.8.tar.gz", hash = "sha256:759b10b33a6dc61cce40a8bd5205e302978bbbcc00e279a8b61d9a6a3c82e4d3"},
 ]
+
+[package.dependencies]
+pytest = ">=7.0.0,<9"
+
+[package.extras]
+docs = ["sphinx (>=5.3)", "sphinx-rtd-theme (>=1.0)"]
+testing = ["coverage (>=6.2)", "hypothesis (>=5.7.1)"]
 
 [[package]]
 name = "python-dotenv"
@@ -381,4 +400,4 @@ dev = ["black (>=19.3b0) ; python_version >= \"3.6\"", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "eb073dcae7970eb41580dd4d69ea9b96d8b25413ededcaf5ab384e01ec970019"
+content-hash = "fc27c0cbd8065d9f99083f6e39528e381bd46093dc9ae3fc51496619dad99643"
