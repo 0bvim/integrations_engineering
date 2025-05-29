@@ -56,7 +56,7 @@ def validate_config():
         if dir_path:
             os.makedirs(dir_path, exist_ok=True)
         else:
-            logging.error(f"Directory path is None, cannot create. This indicates a missing env var.")
+            logging.error("Directory path is None, cannot create. This indicates a missing env var.")
 
 
 if __name__ == "__main__":
