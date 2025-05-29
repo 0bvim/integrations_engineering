@@ -113,7 +113,7 @@ The main objectives of this assesment are to demonstrate:
 
 3. **Start MongoDB using Docker Compose**
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 4. **Run the setup script to initialize sample data**
