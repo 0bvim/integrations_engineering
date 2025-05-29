@@ -39,6 +39,7 @@ class TracOSWorkorder(TypedDict):
     createdAt: datetime
     updatedAt: datetime
     deleted: bool
+    isSynced: bool
     deletedAt: datetime | None = None
 
 
@@ -73,7 +74,9 @@ def create_tracos_sample_workorders() -> list[TracOSWorkorder]:
                 "description": f"Example workorder #{i} description",
                 "createdAt": (base + timedelta(days=i)),
                 "updatedAt": (base + timedelta(days=i, hours=1)),
+                "deletedAt": None,
                 "deleted": False,
+                "isSynced": False,
             }
         )
     return samples
