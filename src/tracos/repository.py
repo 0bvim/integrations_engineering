@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+from datetime import datetime, timezone
+from typing import Dict, List, Any, Optional
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+from loguru import logger
+from bson import ObjectId
+import asyncio
+
+from src.config import MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION
+
+class TracOSRepository:
+    """Repository for interacting with TracOS MongoDB database"""
+
+    def __init__(self, mongo_uri: str = MONGO_URI):
+        self.client = AsyncIOMotorClient(mongo_uri)
+        self.db = self.client[MONGO_DATABASE]
+        self.collection = self.db[MONGO_COLLECTION]
+
+    async def get_unsynchronized_workorders(self) -> List[Dict[str, Any]]:
+        """Get all workorders that have not been synchronized yet"""
+        try:
+            cursor = self.collection.find({"isSynced": False})
+            return await cursor.to_list(length=100)
+        except Exception as e:
+            logger.error(f"Error retrieving unsynchronized workorders: {e}")
+            return []
+
+    async def create_or_update_workorder(self, workorder: Dict[str, Any]) -> bool:
+        """Create a new workorder or update an existing one"""
+        try:
+            existing = await self.collection.find_one({"number": workorder["number"]})
+
+            if existing:
+                result = await self.collection.update_one(
+                    {"number": workorder["number"]},
+                    {"$set": {**workorder, "updatedAt": datetime.now(timezone.utc)}}
+                )
+                logger.info(f"Updated workorder {workorder['number']}")
+                return result.modified_count > 0
+            else:
+                workorder["createdAt"] = datetime.now(timezone.utc)
+                workorder["updatedAt"] = workorder["createdAt"]
+                workorder["isSynced"] = False
+                result = await self.collection.insert_one(workorder)
+                logger.info(f"Created workorder {workorder['number']}")
+                return bool(result.inserted_id)
+        except Exception as e:
+            logger.error(f"Error creating/updating workorder: {e}")
+            await asyncio.sleep(1) # Retry after a short delay
+            try:
+                return await self.create_or_update_workorder(workorder)
+            except Exception as retry_e:
+                logger.error(f"Retry failed: {retry_e}")
+                return False
+
+    async def mark_as_synced(self, workorder_id: str) -> bool:
+        """Mark a workorder as synchronized"""
+        try:
+            result = await self.collection.update_one(
+                {"_id": ObjectId(workorder_id)},
+                {
+                    "$set": {
+                        "isSynced": True,
+                        "syncedAt": datetime.now(timezone.utc)
+                    }
+                }
+            )
+            return result.modified_count > 0
+        except Exception as e:
+            logger.error(f"Error marking workorder {workorder_id} as synced: {e}")
+            return False
