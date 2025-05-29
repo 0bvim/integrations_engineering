@@ -1,5 +1,12 @@
-.PHONY: test_config_py
+.PHONY: all
+all: test_config_py test_logger_py
 
+.PHONY: test_config_py
 test_config_py:
 	@echo "Running tests for config.py"
 	@python3 src/config.py
+
+.PHONY: test_logger_py
+test_logger_py:
+	@echo "Running tests for logger.py"
+	@python3 src/logger_config.py
