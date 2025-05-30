@@ -16,7 +16,7 @@ class WorkorderMapper:
             status = "completed"
         elif client_workorder.get("isOnHold", False):
             status = "on_hold"
-        elif client_workorder.get("isCanceled", False):
+        elif client_workorder.get("isCanceled", False) or client_workorder.get("isDeleted", False):
             status = "cancelled"
         elif not client_workorder.get("isPending", True):
             status = "in_progress"
