@@ -110,7 +110,12 @@ async def main():
     logger.info(f"Using MongoDB URI: {os.environ.get('MONGO_URI', 'mongodb://localhost:27017/tractian')}")
 
     # Create and run the integration service
-    service = IntegrationService()
+    try:
+        service = IntegrationService()
+        await service.tracos_repo.connect()
+    except Exception:
+        logger.error("Failed to connect to TracOS repository")
+        exit(1)
 
     if os.environ.get("RUN_MODE", "once") == "continuous":
         interval = int(os.environ.get("SYNC_INTERVAL_SECONDS", "60"))
