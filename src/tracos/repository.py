@@ -47,9 +47,12 @@ class TracOSRepository:
             existing = await self.collection.find_one({"number": workorder["number"]})
 
             if existing:
+                if self.compare_items(existing, workorder):
+                    logger.info(f"Workorder {workorder['number']} is already up-to-date, skipping")
+                    return True
                 result = await self.collection.update_one(
                     {"number": workorder["number"]},
-                    {"$set": {**workorder, "updatedAt": datetime.now(timezone.utc)}}
+                    {"$set": {**workorder, "updatedAt": datetime.now(timezone.utc), "isSynced": False}}
                 )
                 logger.info(f"Updated workorder {workorder['number']}")
                 return result.modified_count > 0
@@ -91,3 +94,10 @@ class TracOSRepository:
         except Exception as e:
             logger.error(f"Error marking workorder {workorder_id} as synced: {e}")
             return False
+
+    def compare_items(self, inbound, outbound) -> bool:
+        """Compare two workorder items for equality"""
+        keys = ["description", "status", "title", "deleted"]
+        filtered_inbound = {k: v for k, v in inbound.items() if k in keys}
+        filtered_outbound = {k: v for k, v in outbound.items() if k in keys}
+        return filtered_inbound == filtered_outbound
