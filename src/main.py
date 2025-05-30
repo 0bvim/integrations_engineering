@@ -37,7 +37,6 @@ class IntegrationService:
         inbound_workorders = await self.client_repo.get_inbound_workorders()
         logger.info(f"Found {len(inbound_workorders)} inbound workorders to process")
 
-        # Process each workorder
         for client_workorder in inbound_workorders:
             try:
                 tracos_workorder = self.mapper.client_to_tracos(client_workorder)
@@ -103,7 +102,6 @@ class IntegrationService:
             logger.info("Integration service shutting down")
 
 async def main():
-    # Setup logging
     setup_logging()
 
     # Log startup message
