@@ -26,7 +26,6 @@ class ClientRepository:
                 try:
                     with open(file_path, "r") as f:
                         workorder = json.load(f)
-                        # Basic validation
                         if self._validate_inbound_workorder(workorder):
                             workorders.append(workorder)
                         else:
@@ -41,9 +40,15 @@ class ClientRepository:
         return workorders
 
     def _validate_inbound_workorder(self, workorder: Dict[str, Any]) -> bool:
-        """Validate that the inbound workorder has required fields"""
+        """Validate that the inbound workorder has required fields and valid orderNo"""
         required_fields = ["orderNo", "isCanceled", "isDeleted", "creationDate"]
-        return all(field in workorder for field in required_fields)
+        for field in required_fields:
+            if field not in workorder:
+                return False
+        order_no = workorder.get("orderNo")
+        if not isinstance(order_no, int):
+            return False
+        return True
 
     async def write_outbound_workorder(self, workorder: Dict[str, Any]) -> bool:
         """Write a workorder to the outbound directory"""
