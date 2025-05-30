@@ -11,18 +11,34 @@ from src.config import MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION
 class TracOSRepository:
     """Repository for interacting with TracOS MongoDB database"""
 
+    db, collection, client = [None, None, None]
     def __init__(self, mongo_uri: str = MONGO_URI):
-        self.client = AsyncIOMotorClient(mongo_uri)
-        self.db = self.client[MONGO_DATABASE]
-        self.collection = self.db[MONGO_COLLECTION]
+        self.mongo_uri = mongo_uri
+        self.retry = 1
+
+    async def connect(self):
+        """Establish connection to MongoDB"""
+        self.client = None
+        if not self.client:
+            logger.info("Connecting to MongoDB...")
+            self.client = AsyncIOMotorClient(self.mongo_uri, connectTimeoutMS=500, timeoutMS=500)
+
+            pong = await self.client.admin.command('ping')
+            if pong != {'ok': 1.0}:
+                logger.error("Failed to connect to MongoDB")
+                raise ConnectionError("Could not connect to MongoDB")
+
+            self.db = self.client[MONGO_DATABASE]
+            self.collection = self.db[MONGO_COLLECTION]
+            logger.info("Connected to MongoDB")
 
     async def get_unsynchronized_workorders(self) -> List[Dict[str, Any]]:
         """Get all workorders that have not been synchronized yet"""
         try:
             cursor = self.collection.find({"isSynced": False})
             return await cursor.to_list(length=100)
-        except Exception as e:
-            logger.error(f"Error retrieving unsynchronized workorders: {e}")
+        except Exception:
+            logger.error("Error retrieving unsynchronized workorders: failed to connect to MongoDB")
             return []
 
     async def create_or_update_workorder(self, workorder: Dict[str, Any]) -> bool:
@@ -44,13 +60,19 @@ class TracOSRepository:
                 result = await self.collection.insert_one(workorder)
                 logger.info(f"Created workorder {workorder['number']}")
                 return bool(result.inserted_id)
-        except Exception as e:
-            logger.error(f"Error creating/updating workorder: {e}")
+        except Exception:
+            logger.error(f"Error creating/updating workorder: mongoDB connection failed: retrying... {self.retry}")
+            self.retry += 1
+
+            if self.retry > 3:
+                logger.error("Max retries reached, giving up on creating/updating workorder")
+                exit(1)
+
             await asyncio.sleep(1) # Retry after a short delay
             try:
                 return await self.create_or_update_workorder(workorder)
-            except Exception as retry_e:
-                logger.error(f"Retry failed: {retry_e}")
+            except Exception:
+                logger.error("Retry failed: could not create/update workorder")
                 return False
 
     async def mark_as_synced(self, workorder_id: str) -> bool:
