@@ -33,3 +33,14 @@ mongo:
 .PHONY: mongo
 test:
 	@echo "Running tests (not implemented yet)"
+
+.PHONY: setup
+setup:
+	@echo "Setting up the environment"
+	@poetry run python -m setup
+
+.PHONY: clean_data
+clean_data:
+	@echo "Cleaning data inbound and outbound directories"
+	@rm -rf data/inbound/*
+	@rm -rf data/outbound/*
