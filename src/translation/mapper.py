@@ -62,7 +62,7 @@ class WorkorderMapper:
             "creationDate": WorkorderMapper._format_date(tracos_workorder.get("createdAt")),
             "lastUpdateDate": WorkorderMapper._format_date(tracos_workorder.get("updatedAt")),
             "isDeleted": tracos_workorder.get("deleted", False),
-            "isSynced": True,  # This is being synced now
+            "isSynced": True,
             **status_map
         }
 

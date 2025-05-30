@@ -96,7 +96,6 @@ class IntegrationService:
                         timeout=interval_seconds
                     )
                 except asyncio.TimeoutError:
-                    # Timeout means interval elapsed, continue with the loop
                     pass
         finally:
             logger.info("Integration service shutting down")
