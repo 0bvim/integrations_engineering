@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 import os
 import json
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from loguru import logger
-from datetime import datetime
 
 from src.config import DATA_INBOUND_DIR, DATA_OUTBOUND_DIR
 
