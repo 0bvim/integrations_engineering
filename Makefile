@@ -44,14 +44,17 @@ clean_data:
 .PHONY: tests
 tests:
 	@echo "Running tests"
-	@poetry run pytest --maxfail=1 --disable-warnings
+	# Use VERBOSE=-v to enable verbose output
+	@poetry run pytest $(VERBOSE) --maxfail=1 --disable-warnings
 
 .PHONY: test_unity
 test_unity:
 	@echo "Running Unity tests"
-	@poetry run pytest -v --maxfail=1 --disable-warnings tests/unity/test_client.py
+	# Use VERBOSE=-v to enable verbose output
+	@poetry run pytest $(VERBOSE) --maxfail=1 --disable-warnings tests/unity/*
 
 .PHONY: test_flow
 test_flow:
 	@echo "Running E2E tests"
-	@poetry run pytest -v --maxfail=1 --disable-warnings tests/e2e/test_flow.py
+	# Use VERBOSE=-v to enable verbose output
+	@poetry run pytest $(VERBOSE) --maxfail=1 --disable-warnings tests/e2e/test_flow.py
