@@ -30,10 +30,6 @@ mongo:
 	@echo "starting MongoDB"
 	@docker compose up -d
 
-.PHONY: mongo
-test:
-	@echo "Running tests (not implemented yet)"
-
 .PHONY: setup
 setup:
 	@echo "Setting up the environment"
@@ -44,3 +40,18 @@ clean_data:
 	@echo "Cleaning data inbound and outbound directories"
 	@rm -rf data/inbound/*
 	@rm -rf data/outbound/*
+
+.PHONY: tests
+tests:
+	@echo "Running tests"
+	@poetry run pytest --maxfail=1 --disable-warnings
+
+.PHONY: test_unity
+test_unity:
+	@echo "Running Unity tests"
+	@poetry run pytest -v --maxfail=1 --disable-warnings tests/unity/test_client.py
+
+.PHONY: test_flow
+test_flow:
+	@echo "Running E2E tests"
+	@poetry run pytest -v --maxfail=1 --disable-warnings tests/e2e/test_flow.py
