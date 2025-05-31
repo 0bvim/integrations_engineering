@@ -49,9 +49,6 @@ class TracOSRepository:
 
     async def get_unsynchronized_workorders(self) -> List[Dict[str, Any]]:
         """Get all workorders that have not been synchronized yet"""
-        if not self.collection:
-            logger.error("Not connected to mongoDB, cannot retrieve unsynchronized workorders")
-            return []
         try:
             cursor = self.collection.find({"isSynced": False})
             return await cursor.to_list(length=100)
@@ -68,9 +65,11 @@ class TracOSRepository:
                 if self.compare_items(existing, workorder):
                     logger.info(f"Workorder {workorder['number']} is already up-to-date, skipping")
                     return True
+
+                update_data = {**workorder, "updatedAt": datetime.now(timezone.utc), "isSynced": False}
                 result = await self.collection.update_one(
                     {"number": workorder["number"]},
-                    {"$set": {**workorder, "updatedAt": datetime.now(timezone.utc), "isSynced": False}}
+                    {"$set": update_data}
                 )
                 logger.info(f"Updated workorder {workorder['number']}")
                 return result.modified_count > 0
