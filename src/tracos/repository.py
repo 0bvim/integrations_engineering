@@ -28,6 +28,7 @@ class TracOSRepository:
                 logger.info(f"Connecting to MongoDB (attempt {attempt + 1}/{self.retry_attempts})...")
                 self.client = AsyncIOMotorClient(self.mongo_uri, serverSelectionTimeoutMS=5000)
                 await self.client.admin.command('ping')
+
                 self.db = self.client[self.db_name]
                 self.collection = self.db[self.collection_name]
                 logger.info("Successfully connected to MongoDB")
@@ -39,6 +40,12 @@ class TracOSRepository:
                 else:
                     logger.error("Max retry attempts reached, could not connect to MongoDB")
                     raise ConnectionError("Could not connect to MongoDB after several attempts")
+
+    async def disconnect(self):
+        """Close the MongoDB connection"""
+        if self.client:
+            self.client.close()
+            logger.info("MongoDB connection closed")
 
     async def get_unsynchronized_workorders(self) -> List[Dict[str, Any]]:
         """Get all workorders that have not been synchronized yet"""
