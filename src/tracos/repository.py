@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from datetime import datetime, timezone
-from typing import Dict, List, Any, Optional
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+from typing import Dict, List, Any
+from motor.motor_asyncio import AsyncIOMotorClient
 from loguru import logger
 from bson import ObjectId
 import asyncio
