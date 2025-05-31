@@ -4,7 +4,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from loguru import logger
 from bson import ObjectId
 import asyncio
-import os
 
 from src.config import MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION
 
