@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Entrypoint for the TracOS ↔ Client Integration Flow"""
 
 import asyncio
