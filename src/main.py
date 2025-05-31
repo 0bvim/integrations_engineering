@@ -1,5 +1,4 @@
 """Entrypoint for the TracOS ↔ Client Integration Flow"""
-
 import asyncio
 import os
 import signal
@@ -126,7 +125,6 @@ async def main():
         await service.run_once()
 
     logger.info("Integration flow completed")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
