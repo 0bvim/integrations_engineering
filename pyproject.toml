@@ -20,7 +20,7 @@ iso8601 = "^0.1.14"    # For ISO 8601 date handling
 load-dotenv = "^0.1.0"
 
 [tool.poetry.group.formatting.dependencies]
-black = "^23.3.0"
+black = "^24.3.0"
 
 
 [tool.poetry.group.dev.dependencies]
