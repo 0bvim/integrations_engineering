@@ -2,24 +2,30 @@
 name = "integrations-engineering-code-assesment"
 version = "0.1.0"
 description = "Async Python project for bidirectional workorder integration between systems"
-authors = ["Your Name <you@example.com>"]
+authors = ["Vinicius Pereira <niviciusdev@gmail.com>"]
 package-mode = false
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
 [tool.poetry.dependencies]
 python = "^3.11"
 loguru = "^0.7.2"
-motor = "^3.1.1"           # Async MongoDB driver
-pytest = "^7.4.0"
-iso8601 = "^0.1.14"        # For ISO 8601 date handling
-pytest-asyncio = "^0.23.0" # For async testing support
+motor = "^3.1.1"       # Async MongoDB driver
+iso8601 = "^0.1.14"    # For ISO 8601 date handling
 load-dotenv = "^0.1.0"
 
 [tool.poetry.group.formatting.dependencies]
 black = "^23.3.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.5"
+pytest-asyncio = "^1.0.0"
 
 [tool.black]
 line-length = 88
