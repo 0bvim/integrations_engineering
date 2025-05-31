@@ -22,8 +22,8 @@ class WorkorderMapper:
             status = "in_progress"
 
         # Parse ISO dates
-        created_at = WorkorderMapper._parse_iso_date(client_workorder.get("creationDate"))
-        updated_at = WorkorderMapper._parse_iso_date(client_workorder.get("lastUpdateDate"))
+        created_at = WorkorderMapper._parse_iso_date(str(client_workorder.get("creationDate")))
+        updated_at = WorkorderMapper._parse_iso_date(str(client_workorder.get("lastUpdateDate")))
 
         # Convert to TracOS format
         tracos_workorder = {
