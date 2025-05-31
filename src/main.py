@@ -23,10 +23,10 @@ signal.signal(signal.SIGTERM, handle_signal)
 class IntegrationService:
     """Main service that orchestrates the integration flow"""
 
-    def __init__(self):
-        self.tracos_repo = TracOSRepository()
-        self.client_repo = ClientRepository()
-        self.mapper = WorkorderMapper()
+    def __init__(self, tracos_repo: TracOSRepository = None, client_repo: ClientRepository = None, mapper: WorkorderMapper = None):
+        self.tracos_repo = tracos_repo or TracOSRepository()
+        self.client_repo = client_repo or ClientRepository()
+        self.mapper = mapper or WorkorderMapper()
 
     async def process_inbound(self):
         """Process the inbound flow (Client → TracOS)"""
@@ -76,11 +76,14 @@ class IntegrationService:
     async def run_once(self):
         """Run the integration flow once"""
         try:
+            await self.tracos_repo.connect()
             # Process inbound first, then outbound
             await self.process_inbound()
             await self.process_outbound()
         except Exception as e:
             logger.error(f"Error running integration flow: {e}")
+        finally:
+            await self.tracos_repo.disconnect()
 
     async def run_continuously(self, interval_seconds=60):
         """Run the integration flow continuously with a specified interval"""
