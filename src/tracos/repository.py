@@ -49,11 +49,14 @@ class TracOSRepository:
 
     async def get_unsynchronized_workorders(self) -> List[Dict[str, Any]]:
         """Get all workorders that have not been synchronized yet"""
+        if not self.collection:
+            logger.error("Not connected to mongoDB, cannot retrieve unsynchronized workorders")
+            return []
         try:
             cursor = self.collection.find({"isSynced": False})
             return await cursor.to_list(length=100)
-        except Exception:
-            logger.error("Error retrieving unsynchronized workorders: failed to connect to MongoDB")
+        except Exception as e:
+            logger.error(f"Error retrieving unsynchronized workorders: {e}")
             return []
 
     async def create_or_update_workorder(self, workorder: Dict[str, Any]) -> bool:
