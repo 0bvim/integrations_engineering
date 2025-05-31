@@ -56,43 +56,39 @@ class TracOSRepository:
             return []
 
     async def create_or_update_workorder(self, workorder: Dict[str, Any]) -> bool:
-        """Create a new workorder or update an existing one"""
-        try:
-            existing = await self.collection.find_one({"number": workorder["number"]})
-
-            if existing:
-                if self.compare_items(existing, workorder):
-                    logger.info(f"Workorder {workorder['number']} is already up-to-date, skipping")
-                    return True
-
-                update_data = {**workorder, "updatedAt": datetime.now(timezone.utc), "isSynced": False}
-                result = await self.collection.update_one(
-                    {"number": workorder["number"]},
-                    {"$set": update_data}
-                )
-                logger.info(f"Updated workorder {workorder['number']}")
-                return result.modified_count > 0
-            else:
-                workorder["createdAt"] = datetime.now(timezone.utc)
-                workorder["updatedAt"] = workorder["createdAt"]
-                workorder["isSynced"] = False
-                result = await self.collection.insert_one(workorder)
-                logger.info(f"Created workorder {workorder['number']}")
-                return bool(result.inserted_id)
-        except Exception:
-            logger.error(f"Error creating/updating workorder: mongoDB connection failed: retrying... {self.retry}")
-            self.retry += 1
-
-            if self.retry > 3:
-                logger.error("Max retries reached, giving up on creating/updating workorder")
-                exit(1)
-
-            await asyncio.sleep(1) # Retry after a short delay
+        """Create a new workorder or update an existing one, with retry logic."""
+        for attempt in range(self.retry_attempts):
             try:
-                return await self.create_or_update_workorder(workorder)
-            except Exception:
-                logger.error("Retry failed: could not create/update workorder")
-                return False
+                existing = await self.collection.find_one({"number": workorder["number"]})
+
+                if existing:
+                    if self.compare_items(existing, workorder):
+                        logger.info(f"Workorder {workorder['number']} is already up-to-date, skipping")
+                        return True
+
+                    update_data = {**workorder, "updatedAt": datetime.now(timezone.utc), "isSynced": False}
+                    result = await self.collection.update_one(
+                        {"number": workorder["number"]},
+                        {"$set": update_data}
+                    )
+                    logger.info(f"Updated workorder {workorder['number']}")
+                    return result.modified_count > 0
+                else:
+                    workorder["createdAt"] = datetime.now(timezone.utc)
+                    workorder["updatedAt"] = workorder["createdAt"]
+                    workorder["isSynced"] = False
+                    result = await self.collection.insert_one(workorder)
+                    logger.info(f"Created workorder {workorder['number']}")
+                    return bool(result.inserted_id)
+
+            except Exception as e:
+                logger.error(f"Attempt {attempt + 1}/{self.retry_attempts} failed for workorder {workorder.get('number')}: {e}")
+                if attempt < self.retry_attempts - 1:
+                    await asyncio.sleep(self.retry_delay)
+                else:
+                    logger.error(f"Max retries reached for workorder {workorder.get('number')}. Giving up.")
+                    return False
+        return False
 
     async def mark_as_synced(self, workorder_id: str) -> bool:
         """Mark a workorder as synchronized"""
