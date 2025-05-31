@@ -4,32 +4,41 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from loguru import logger
 from bson import ObjectId
 import asyncio
+import os
 
 from src.config import MONGO_URI, MONGO_DATABASE, MONGO_COLLECTION
 
 class TracOSRepository:
     """Repository for interacting with TracOS MongoDB database"""
 
-    db, collection, client = [None, None, None]
-    def __init__(self, mongo_uri: str = MONGO_URI):
+    def __init__(self, mongo_uri: str = MONGO_URI, db_name: str = MONGO_DATABASE, collection_name: str = MONGO_COLLECTION):
         self.mongo_uri = mongo_uri
-        self.retry = 1
+        self.db_name = db_name
+        self.collection_name = collection_name
+        self.client = None
+        self.db = None
+        self.collection = None
+        self.retry_attempts = 3
+        self.retry_delay = 2
 
     async def connect(self):
         """Establish connection to MongoDB"""
-        self.client = None
-        if not self.client:
-            logger.info("Connecting to MongoDB...")
-            self.client = AsyncIOMotorClient(self.mongo_uri, connectTimeoutMS=500, timeoutMS=500)
-
-            pong = await self.client.admin.command('ping')
-            if pong != {'ok': 1.0}:
-                logger.error("Failed to connect to MongoDB")
-                raise ConnectionError("Could not connect to MongoDB")
-
-            self.db = self.client[MONGO_DATABASE]
-            self.collection = self.db[MONGO_COLLECTION]
-            logger.info("Connected to MongoDB")
+        for attempt in range(self.retry_attempts):
+            try:
+                logger.info(f"Connecting to MongoDB (attempt {attempt + 1}/{self.retry_attempts})...")
+                self.client = AsyncIOMotorClient(self.mongo_uri, serverSelectionTimeoutMS=5000)
+                await self.client.admin.command('ping')
+                self.db = self.client[self.db_name]
+                self.collection = self.db[self.collection_name]
+                logger.info("Successfully connected to MongoDB")
+                return
+            except Exception as e:
+                logger.error(f"Failed to connect to MongoDB on attempt {attempt + 1}: {e}")
+                if attempt < self.retry_attempts - 1:
+                    await asyncio.sleep(self.retry_delay)
+                else:
+                    logger.error("Max retry attempts reached, could not connect to MongoDB")
+                    raise ConnectionError("Could not connect to MongoDB after several attempts")
 
     async def get_unsynchronized_workorders(self) -> List[Dict[str, Any]]:
         """Get all workorders that have not been synchronized yet"""
