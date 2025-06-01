@@ -46,7 +46,9 @@ The integration flow is designed with a clear separation of concerns to enhance 
 
 1.  **Clone the repository**
     ```bash
+    # Clone the repository using SSH
     git clone git@github.com:0bvim/integrations_engineering.git integrations-engineering
+
     # or using GitHub CLI
     gh repo clone 0bvim/integrations_engineering integrations-engineering
 
@@ -65,17 +67,19 @@ The integration flow is designed with a clear separation of concerns to enhance 
 
 3.  **Start MongoDB using Docker Compose**
     ```bash
+    # If you have Docker and Docker Compose installed, you can start MongoDB with Docker Compose.
     docker-compose up -d
 
     # if you have docker compose v2+ installed, you can use:
     docker compose up -d
 
-    # Commands with make (optional)
+    # Or using make (optional, compose v2+)
     make mongo
     ```
 
 4.  **Run the setup script to initialize sample data**
     ```bash
+    # Run via command line
     poetry run python setup.py
 
     # or using make
@@ -128,6 +132,7 @@ integrations-engineering/
 
 1.  **To run the integration flow once:**
     ```bash
+    # run in command line
     poetry run python src.main.py
 
     # or using make
@@ -136,6 +141,7 @@ integrations-engineering/
 
 2.  **To run the integration flow continuously:**
     ```bash
+    # run in command line
     RUN_MODE=continuous poetry run python src.main.py
 
     # or using make
@@ -156,6 +162,7 @@ The project has a comprehensive test suite covering different layers of the appl
 
 Run all tests with:
 ```bash
+# Run all tests in the project in command line
 poetry run pytest
 
 # or using make

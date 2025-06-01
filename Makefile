@@ -1,5 +1,5 @@
 RUN_MODE := continuous
-SYNC_INTERVAL_SECONDS := 3
+SYNC_INTERVAL_SECONDS := 5
 
 .PHONY: all
 all:
