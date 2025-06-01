@@ -48,7 +48,7 @@ tests:
 	@poetry run pytest $(VERBOSE) --maxfail=1 --disable-warnings
 
 .PHONY: tests_unity
-test_unity:
+tests_unity:
 	@echo "Running Unity tests"
 	# Use VERBOSE=-v to enable verbose output
 	@poetry run pytest $(VERBOSE) --maxfail=1 --disable-warnings tests/unity/*
