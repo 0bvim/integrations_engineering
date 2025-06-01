@@ -133,7 +133,7 @@ integrations-engineering/
 1.  **To run the integration flow once:**
     ```bash
     # run in command line
-    poetry run python src.main.py
+    poetry run python src.main
 
     # or using make
     make
@@ -142,7 +142,7 @@ integrations-engineering/
 2.  **To run the integration flow continuously:**
     ```bash
     # run in command line
-    RUN_MODE=continuous poetry run python src.main.py
+    RUN_MODE=continuous poetry run python src.main
 
     # or using make
     make run
