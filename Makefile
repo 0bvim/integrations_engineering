@@ -7,7 +7,7 @@ all:
 
 .PHONY: run
 run:
-	# to change environment variables
+	# to change values of MAKEFILE variables, run:
 	# run `make run RUN_MODE=continuous SYNC_INTERVAL_SECONDS=3`
 	@RUN_MODE=$(RUN_MODE) \
 	SYNC_INTERVAL_SECONDS=$(SYNC_INTERVAL_SECONDS) \
