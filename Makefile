@@ -47,14 +47,14 @@ tests:
 	# Use VERBOSE=-v to enable verbose output
 	@poetry run pytest $(VERBOSE) --maxfail=1 --disable-warnings
 
-.PHONY: test_unity
+.PHONY: tests_unity
 test_unity:
 	@echo "Running Unity tests"
 	# Use VERBOSE=-v to enable verbose output
 	@poetry run pytest $(VERBOSE) --maxfail=1 --disable-warnings tests/unity/*
 
-.PHONY: test_flow
-test_flow:
+.PHONY: test_e2e
+test_e2e:
 	@echo "Running E2E tests"
 	# Use VERBOSE=-v to enable verbose output
 	@poetry run pytest $(VERBOSE) --maxfail=1 --disable-warnings tests/e2e/test_flow.py
