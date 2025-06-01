@@ -80,7 +80,7 @@ The integration flow is designed with a clear separation of concerns to enhance 
 4.  **Run the setup script to initialize sample data**
     ```bash
     # Run via command line
-    poetry run python setup
+    poetry run python -m setup
 
     # or using make
     make setup
