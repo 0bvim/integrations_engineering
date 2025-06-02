@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import asyncio
 import json
 import os
@@ -9,7 +8,9 @@ from random import choice
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.collection import Collection
 from loguru import logger
+from dotenv import load_dotenv
 
+load_dotenv()
 # ----- CONFIG -----
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 MONGO_DATABASE = os.getenv("MONGO_DATABASE", "tractian")
