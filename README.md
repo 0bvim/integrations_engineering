@@ -109,6 +109,7 @@ Consult the [Poetry documentation](https://python-poetry.org/docs/#installing-wi
 ```
 integrations-engineering/
 ├── data/                             # Directory for input and output files
+├── logs/                             # Directory application errors log (created when first error occur)
 ├── docker-compose.yml                # Docker Compose file to run MongoDB
 ├── poetry.lock                       # Poetry lock file for dependency versions
 ├── pyproject.toml                    # Poetry project configuration
