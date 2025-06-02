@@ -91,13 +91,13 @@ The integration flow is designed with a clear separation of concerns to enhance 
 
     ```bash
     # .env file example
-    MONGO_URI=mongodb://localhost:27017/tractian
-    DATA_INBOUND_DIR=./data/inbound
-    DATA_OUTBOUND_DIR=./data/outbound
+    echo 'MONGO_URI=mongodb://localhost:27017/tractian' > .env
+    echo 'DATA_INBOUND_DIR=./data/inbound' >> .env
+    echo 'DATA_OUTBOUND_DIR=./data/outbound' >> .env
 
     # For continuous execution
-    RUN_MODE=continuous
-    SYNC_INTERVAL_SECONDS=60
+    echo 'RUN_MODE=continuous' >> .env
+    echo 'SYNC_INTERVAL_SECONDS=60' >> .env
     ```
 
 ## Project Structure
