@@ -3,6 +3,7 @@ import asyncio
 import os
 import signal
 from loguru import logger
+from dotenv import load_dotenv
 
 from src.utils.logging import setup_logging
 from src.tracos.repository import TracOSRepository
@@ -11,13 +12,6 @@ from src.translation.mapper import WorkorderMapper
 
 # Setup signal handling for graceful shutdown
 shutdown_event = asyncio.Event()
-
-def handle_signal(sig, frame):
-    logger.info(f"Received signal {sig}, shutting down...")
-    shutdown_event.set()
-
-signal.signal(signal.SIGINT, handle_signal)
-signal.signal(signal.SIGTERM, handle_signal)
 
 class IntegrationService:
     """Main service that orchestrates the integration flow"""
@@ -102,7 +96,17 @@ class IntegrationService:
             logger.info("Integration service shutting down")
 
 async def main():
+    load_dotenv()
     setup_logging()
+
+    def handle_signal(sig, frame):
+        logger.info(f"Received signal {sig}, shutting down...")
+        shutdown_event.set()
+
+    loop = asyncio.get_event_loop()
+
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        loop.add_signal_handler(sig, handle_signal, sig, None)
 
     # Log startup message
     logger.info("Starting TracOS ↔ Client Integration Flow")
@@ -118,8 +122,8 @@ async def main():
         logger.error("Failed to connect to TracOS repository")
         exit(1)
 
-    if os.environ.get("RUN_MODE", "once") == "continuous":
-        interval = int(os.environ.get("SYNC_INTERVAL_SECONDS", "60"))
+    if os.getenv("RUN_MODE", "once") == "continuous":
+        interval = int(os.getenv("SYNC_INTERVAL_SECONDS", "60"))
         await service.run_continuously(interval)
     else:
         await service.run_once()
