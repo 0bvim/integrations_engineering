@@ -95,9 +95,10 @@ The integration flow is designed with a clear separation of concerns to enhance 
     echo 'DATA_INBOUND_DIR=./data/inbound' >> .env
     echo 'DATA_OUTBOUND_DIR=./data/outbound' >> .env
 
-    # For continuous execution
-    echo 'RUN_MODE=continuous' >> .env
-    echo 'SYNC_INTERVAL_SECONDS=60' >> .env
+    # For continuous execution set RUN_MODE to 'continuous'
+    # Change interval as needed
+    echo 'RUN_MODE=once' >> .env
+    echo 'SYNC_INTERVAL_SECONDS=5' >> .env
     ```
 
 ## Project Structure
@@ -133,7 +134,7 @@ integrations-engineering/
 1.  **To run the integration flow once:**
     ```bash
     # run in command line
-    poetry run python src.main
+    poetry run python -m src.main
 
     # or using make
     make
@@ -141,6 +142,9 @@ integrations-engineering/
 
 2.  **To run the integration flow continuously:**
     ```bash
+    # Note: You can change both variables in the `.env` file
+    # or pass them directly in the command line or as ARGS to `make run`.
+
     # run in command line
     RUN_MODE=continuous poetry run python src.main
 
