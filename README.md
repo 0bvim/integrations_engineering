@@ -150,7 +150,7 @@ integrations-engineering/
     # or pass them directly in the command line or as ARGS to `make run`.
 
     # run in command line
-    RUN_MODE=continuous poetry run python src.main
+    RUN_MODE=continuous poetry run python -m src.main
 
     # or using make
     make run
