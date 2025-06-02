@@ -66,7 +66,7 @@ The integration flow is designed with a clear separation of concerns to enhance 
     ```
 
 > You may need to add Poetry to your PATH, depending on your shell configuration.
-consult the [Poetry documentation](https://python-poetry.org/docs/#installing-with-the-official-installer) for details.
+Consult the [Poetry documentation](https://python-poetry.org/docs/#installing-with-the-official-installer) for details.
 
 3.  **Start MongoDB using Docker Compose**
     ```bash
@@ -190,3 +190,6 @@ make tests VERBOSE=-v
 * **MongoDB Connection Issues**: If using the real database, ensure Docker is running and the MongoDB container is up with `docker ps`.
 * **Missing Dependencies**: Verify your Poetry environment is activated or run `poetry install` again.
 * **Permission Issues**: Check file permissions for the `data/` and `logs/` directories.
+* **Environment Variables**: Ensure all required environment variables are set correctly in the `.env` file or your shell.
+* **File Format Errors**: Ensure the JSON files in the `data/inbound/` directory are correctly formatted and match the expected schema.\
+* **Docker Compose Issues**: If you encounter issues with Docker Compose, ensure you have installed and that your setup is correct.
