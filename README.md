@@ -65,6 +65,9 @@ The integration flow is designed with a clear separation of concerns to enhance 
     poetry install
     ```
 
+> You may need to add Poetry to your PATH, depending on your shell configuration.
+consult the [Poetry documentation](https://python-poetry.org/docs/#installing-with-the-official-installer) for details.
+
 3.  **Start MongoDB using Docker Compose**
     ```bash
     # If you have Docker and Docker Compose installed, you can start MongoDB with Docker Compose.
